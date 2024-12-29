@@ -1,0 +1,28 @@
+version: "3.7"
+
+# referencia https://www.youtube.com/watch?v=HxPz3eLnXZk
+
+# Services são os serviços/containers que serão criados
+services:
+  api: #Nome do serviço
+    container_name: api-teste-docker # Nome do container
+    build: . # Indica onde esta o Dockerfile para criar a imagem, embora a imagem tambem possa ser montada aqui mesmo
+#     context: . Indica onde esta o Dockerfile para criar a imagem (pode ser um diretório ou um arquivo) no caso em que o arquivo Dockerfile tenha outro nome
+#     dockerfile: Dockerfile-API #Indica o nome do arquivo Dockerfile
+    command: npm run dev
+    ports:
+      - "3000:3000" # Mapeia a porta 3000 do container para a porta 3000 do host
+    volumes: # Mapeia o volume do host para o container
+      - .:/usr/app 
+    restart: always # Sempre que o container cair, ele reiniciará automaticamente
+    depends_on: # Indica que o container api-teste-docker depende do container db no ar antes dele para funcionar
+      - db # O valor do depends_on é o nome do container/serviço que ele depende
+  db:
+    container_name: db-postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    
